@@ -12,7 +12,7 @@ import ChatAppLogo from "../assets/images/chat-app-logo.png";
 import { TextInput, Button } from "react-native-paper";
 
 // create a component
-const LoginScreen = () => {
+const LoginScreen = (props) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -44,7 +44,7 @@ const LoginScreen = () => {
         <Button
           mode="contained"
           dark={true}
-          onPress={() => console.log("Pressed")}
+          onPress={() => props.navigation.navigate("AllPeople")}
         >
           Start Chat
         </Button>
