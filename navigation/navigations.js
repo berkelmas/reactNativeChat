@@ -3,6 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 
 import LoginScreen from "../Screens/LoginScreen";
 import AllPeopleScreen from "../Screens/AllPeopleScreen";
+import ChatScreen from "../Screens/ChatScreen";
 const Stack = createStackNavigator();
 
 export const MainNavigation = (props) => (
@@ -16,6 +17,11 @@ export const MainNavigation = (props) => (
       options={{ headerShown: false }}
       name="AllPeople"
       component={AllPeopleScreen}
+    />
+    <Stack.Screen
+      options={{ headerShown: false }}
+      name="Chat"
+      component={ChatScreen}
     />
   </Stack.Navigator>
 );

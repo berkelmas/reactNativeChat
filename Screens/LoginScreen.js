@@ -35,6 +35,7 @@ const LoginScreen = (props) => {
           onChangeText={(text) => setEmail(text)}
         />
         <TextInput
+          secureTextEntry={true}
           dense={true}
           style={styles.passwordInput}
           label="Password"

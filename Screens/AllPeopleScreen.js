@@ -5,7 +5,7 @@ import ChatAppLogo from "../assets/images/chat-app-logo.png";
 import IcomoonIcon from "../components/Typography/IcomoonIcon";
 
 // create a component
-const AllPeopleScreen = () => {
+const AllPeopleScreen = (props) => {
   return (
     <View style={styles.container}>
       <View
@@ -49,6 +49,7 @@ const AllPeopleScreen = () => {
             }}
           >
             <TouchableOpacity
+              onPress={() => props.navigation.navigate("Chat")}
               style={{
                 flexDirection: "row",
                 alignItems: "center",
