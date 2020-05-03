@@ -14,7 +14,7 @@ import ChatAppLogo from "../assets/images/chat-app-logo.png";
 import IcomoonIcon from "../components/Typography/IcomoonIcon";
 
 // create a component
-const ChatScreen = () => {
+const ChatScreen = (props) => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS == "ios" ? "padding" : "height"}
@@ -30,7 +30,7 @@ const ChatScreen = () => {
             paddingHorizontal: 20,
           }}
         >
-          <TouchableOpacity>
+          <TouchableOpacity onPress={() => props.navigation.goBack()}>
             <IcomoonIcon name="chevron-left" size={35} color="#484848" />
           </TouchableOpacity>
           <View style={{ flexDirection: "row", alignItems: "center" }}>

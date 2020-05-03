@@ -10,11 +10,21 @@ import {
 } from "react-native";
 import ChatAppLogo from "../assets/images/chat-app-logo.png";
 import { TextInput, Button } from "react-native-paper";
+import { useDispatch } from "react-redux";
+import { loginAction } from "../store/actions/user-actions";
 
 // create a component
 const LoginScreen = (props) => {
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  const handleSubmit = () => {
+    if (email !== "" && password !== "") {
+      dispatch(loginAction({ username: email, password }));
+      // history.push("/all-rooms");
+    }
+  };
 
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
@@ -29,6 +39,7 @@ const LoginScreen = (props) => {
         </Text>
         <TextInput
           dense={true}
+          autoCapitalize={"none"}
           style={styles.emailInput}
           label="Email"
           value={email}
@@ -42,11 +53,7 @@ const LoginScreen = (props) => {
           value={password}
           onChangeText={(text) => setPassword(text)}
         />
-        <Button
-          mode="contained"
-          dark={true}
-          onPress={() => props.navigation.navigate("AllPeople")}
-        >
+        <Button mode="contained" dark={true} onPress={handleSubmit}>
           Start Chat
         </Button>
         <Text style={styles.orText}>Or</Text>

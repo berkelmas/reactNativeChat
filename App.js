@@ -1,45 +1,16 @@
 import React, { useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, YellowBox, AsyncStorage } from "react-native";
 import * as Font from "expo-font";
-import {
-  configureFonts,
-  DefaultTheme,
-  Provider as PaperProvider,
-} from "react-native-paper";
-import { NavigationContainer } from "@react-navigation/native";
-import { MainNavigation } from "./navigation/navigations";
+// REDUX
+import { Provider } from "react-redux";
+import configureStore from "./store/store-config";
+const store = configureStore();
+import MainApp from "./Main";
+import { socket } from "./socket/socket";
 
-const fontConfig = {
-  default: {
-    regular: {
-      fontFamily: "Poppins-Regular",
-      fontWeight: "normal",
-    },
-    medium: {
-      fontFamily: "Poppins-Medium",
-      fontWeight: "normal",
-    },
-    light: {
-      fontFamily: "Poppins-Light",
-      fontWeight: "normal",
-    },
-    thin: {
-      fontFamily: "Poppins-Thin",
-      fontWeight: "normal",
-    },
-  },
-};
-
-const theme = {
-  ...DefaultTheme,
-  roundness: 2,
-  colors: {
-    ...DefaultTheme.colors,
-    primary: "#3f91f7",
-    accent: "#3f91f7",
-  },
-  fonts: configureFonts(fontConfig),
-};
+YellowBox.ignoreWarnings([
+  "Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?",
+]);
 
 export default function App() {
   const [loaded, setLoaded] = React.useState(false);
@@ -55,16 +26,14 @@ export default function App() {
     }).then(() => setLoaded(true));
 
     /// FOR DEVELOPMENT PURPOSES
-    // AsyncStorage.clear();
+    AsyncStorage.clear();
   }, []);
 
   return (
     loaded && (
-      <PaperProvider theme={theme}>
-        <NavigationContainer>
-          <MainNavigation />
-        </NavigationContainer>
-      </PaperProvider>
+      <Provider store={store}>
+        <MainApp />
+      </Provider>
     )
   );
 }
