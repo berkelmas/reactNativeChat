@@ -8,9 +8,9 @@ import {
   logout,
 } from "../types/user-types";
 import * as RootNavigation from "../../navigation/RootNavigation";
+import { removePushTokenFromUser } from "../../services/push-notification-service";
 
 export const loginAction = ({ username, password }) => {
-  console.log(username);
   return (dispatch) => {
     loginService(username, password)
       .then((res) => {
@@ -60,8 +60,9 @@ export const setOnlineUsersAction = (onlineUsers) => {
 };
 
 export const logoutAction = () => {
-  return (dispatch) => {
+  return async (dispatch) => {
     socket.emit("logout user");
+    await removePushTokenFromUser();
     AsyncStorage.removeItem("token");
     AsyncStorage.removeItem("user");
     dispatch({ type: logout });

@@ -1,6 +1,14 @@
 //import liraries
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
+import { Button } from "react-native-paper";
 import ChatAppLogo from "../assets/images/chat-app-logo.png";
 import IcomoonIcon from "../components/Typography/IcomoonIcon";
 import { socket } from "../socket/socket";
@@ -11,6 +19,7 @@ import {
   logoutAction,
 } from "../store/actions/user-actions";
 import { getUnreadMessageCount } from "../services/message-service";
+import { registerForPushNotificationsAsync } from "../services/push-notification-service";
 
 // create a component
 const AllPeopleScreen = (props) => {
@@ -19,6 +28,14 @@ const AllPeopleScreen = (props) => {
   const onlineUsers = useSelector((state) => state.userReducer.onlineUsers);
   const reduxUser = useSelector((state) => state.userReducer.user);
   const [unreadMessageHash, setUnreadMessageHash] = useState([]);
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then((res) => {
+      if (res) {
+        console.log("TOKEN KAYDI BASARILI...");
+      }
+    });
+  }, []);
 
   useEffect(() => {
     getAllUsers(0, 9999).then((res) => {
@@ -35,6 +52,7 @@ const AllPeopleScreen = (props) => {
     });
 
     socket.on("get online users", (onlineUsers) => {
+      console.log(onlineUsers);
       dispatch(setOnlineUsersAction(onlineUsers));
     });
 
@@ -49,7 +67,7 @@ const AllPeopleScreen = (props) => {
 
   const handleLogout = () => {
     dispatch(logoutAction());
-    props.history.push("/");
+    props.navigation.popToTop();
   };
 
   return (
@@ -65,84 +83,112 @@ const AllPeopleScreen = (props) => {
         <View style={{ height: 30, width: 30 }}></View>
       </View>
       <Text style={styles.mainTitle}>People To Chat</Text>
-      {availableUsers.map((user) => (
-        <View key={user._id} style={styles.listItemContainer}>
-          <TouchableOpacity
-            onPress={() => props.navigation.navigate("Chat")}
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              flex: 1,
-            }}
-          >
-            <View
+      <ScrollView contentContainerStyle={{ paddingHorizontal: 20 }}>
+        {availableUsers.map((user) => (
+          <View key={user._id} style={styles.listItemContainer}>
+            <TouchableOpacity
+              onPress={() =>
+                props.navigation.navigate("Chat", {
+                  user: user._id,
+                  userFullName: user.fullName,
+                })
+              }
               style={{
-                height: 40,
-                width: 40,
-                borderRadius: 20,
-                backgroundColor: "#F4F4F4",
-                justifyContent: "center",
+                flexDirection: "row",
                 alignItems: "center",
+                flex: 1,
               }}
             >
+              <View
+                style={{
+                  height: 40,
+                  width: 40,
+                  borderRadius: 20,
+                  backgroundColor: "#F4F4F4",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <Text
+                  style={{
+                    fontFamily: "Poppins-Light",
+                    color: "#acacac",
+                    fontSize: 18,
+                  }}
+                >
+                  {user.fullName.split(" ")[0][0] +
+                    user.fullName.split(" ")[
+                      user.fullName.split(" ").length - 1
+                    ][0]}
+                </Text>
+              </View>
+
+              {onlineUsers.find(
+                (onlineUser) => onlineUser.email === user.email
+              ) && (
+                <View
+                  style={{
+                    backgroundColor: "#3f91f7",
+                    height: 10,
+                    width: 10,
+                    borderRadius: 20,
+                    marginLeft: 10,
+                  }}
+                />
+              )}
               <Text
                 style={{
                   fontFamily: "Poppins-Light",
-                  color: "#acacac",
-                  fontSize: 18,
+                  fontSize: 20,
+                  paddingLeft: 15,
+                  color: "#5d5d5d",
                 }}
               >
-                {user.fullName.split(" ")[0][0] +
-                  user.fullName.split(" ")[
-                    user.fullName.split(" ").length - 1
-                  ][0]}
+                {user.fullName}
               </Text>
-            </View>
-            <View
-              style={{
-                backgroundColor: "#3f91f7",
-                height: 10,
-                width: 10,
-                borderRadius: 20,
-                marginLeft: 10,
-              }}
-            />
-            <Text
-              style={{
-                fontFamily: "Poppins-Light",
-                fontSize: 20,
-                paddingLeft: 15,
-                color: "#5d5d5d",
-              }}
-            >
-              {user.fullName}
-            </Text>
-            <View
-              style={{
-                backgroundColor: "#3f91f7",
-                height: 30,
-                width: 30,
-                borderRadius: 20,
-                marginLeft: "auto",
-                borderColor: "#d1d1d1",
-                borderWidth: 1,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Text
-                style={{
-                  color: "white",
-                  fontFamily: "Poppins-Regular",
-                  fontSize: 18,
-                }}
-              >
-                3
-              </Text>
-            </View>
-          </TouchableOpacity>
-        </View>
-      ))}
+              {unreadMessageHash.find((item) => item._id === user._id) && (
+                <View
+                  style={{
+                    backgroundColor: "#3f91f7",
+                    height: 30,
+                    width: 30,
+                    borderRadius: 20,
+                    marginLeft: "auto",
+                    borderColor: "#d1d1d1",
+                    borderWidth: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "white",
+                      fontFamily: "Poppins-Regular",
+                      fontSize: 18,
+                    }}
+                  >
+                    {unreadMessageHash.find((item) => item._id === user._id)
+                      ? unreadMessageHash.find((item) => item._id === user._id)
+                          .count
+                      : `0`}
+                  </Text>
+                </View>
+              )}
+            </TouchableOpacity>
+          </View>
+        ))}
+      </ScrollView>
+      <View style={styles.bottomContainer}>
+        <Button
+          onPress={handleLogout}
+          mode="contained"
+          color="#35AAF9"
+          dark={true}
+          style={{ marginRight: 20 }}
+        >
+          Logout
+        </Button>
+      </View>
     </View>
   );
 };
@@ -152,12 +198,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
-    paddingHorizontal: 20,
   },
   headerContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginTop: 50,
+    paddingHorizontal: 20,
   },
   mainTitle: {
     fontFamily: "Poppins-Regular",
@@ -165,6 +211,7 @@ const styles = StyleSheet.create({
     color: "#3f91f7",
     marginTop: 20,
     marginBottom: 20,
+    paddingHorizontal: 20,
   },
   listItemContainer: {
     flexDirection: "row",
@@ -172,6 +219,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     borderBottomColor: "#d1d1d1",
     borderBottomWidth: 1,
+  },
+  bottomContainer: {
+    height: 80,
+    width: "100%",
+    backgroundColor: "white",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+    elevation: 5,
+    alignItems: "flex-end",
+    justifyContent: "center",
   },
 });
 

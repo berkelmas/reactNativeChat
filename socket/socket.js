@@ -1,2 +1,3 @@
 import io from "socket.io-client";
-export const socket = io("http://localhost:2000");
+import { config } from "../config";
+export const socket = io(config.apiUrl);
