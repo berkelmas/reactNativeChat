@@ -51,7 +51,28 @@ export const rebuildUserFromLocalStorage = () => {
           AsyncStorage.removeItem("user");
         });
     }
-    dispatch({ type: logout });
+    // dispatch({ type: logout });
+  };
+};
+
+export const reconnectSocket = () => {
+  return async (dispatch) => {
+    const token = await AsyncStorage.getItem("token");
+    const user = await AsyncStorage.getItem("user");
+    if (token) {
+      verifyJWT(token)
+        .then((res) => {
+          const parsedUser = JSON.parse(user);
+          socket.emit("register user socketid", parsedUser._id);
+        })
+        .catch((err) => {
+          dispatch({ type: logout });
+          socket.emit("logout user");
+          AsyncStorage.removeItem("token");
+          AsyncStorage.removeItem("user");
+        });
+    }
+    // dispatch({ type: logout });
   };
 };
 

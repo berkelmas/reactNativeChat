@@ -9,8 +9,12 @@ import {
 import { NavigationContainer } from "@react-navigation/native";
 import { MainNavigation } from "./navigation/navigations";
 import { navigationRef } from "./navigation/RootNavigation";
-import { useDispatch } from "react-redux";
-import { rebuildUserFromLocalStorage } from "./store/actions/user-actions";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  rebuildUserFromLocalStorage,
+  reconnectSocket,
+} from "./store/actions/user-actions";
+import { socket } from "./socket/socket";
 
 const fontConfig = {
   default: {
@@ -49,6 +53,20 @@ const MainApp = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(rebuildUserFromLocalStorage());
+
+    socket.on("disconnect", () => {
+      console.log("Connection Status", socket.connected);
+      socket.connect();
+    });
+
+    socket.on("connect", () => {
+      dispatch(reconnectSocket());
+      console.log("Connection Status", socket.connected);
+    });
+
+    socket.on("reconnecting", (attemptNumber) => {
+      console.log(attemptNumber + " reconnecting... ");
+    });
   }, []);
 
   return (

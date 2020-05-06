@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { StyleSheet, YellowBox, AsyncStorage } from "react-native";
+import { StyleSheet, YellowBox } from "react-native";
 import * as Font from "expo-font";
 // REDUX
 import { Provider } from "react-redux";
@@ -26,7 +26,10 @@ export default function App() {
     }).then(() => setLoaded(true));
 
     /// FOR DEVELOPMENT PURPOSES
-    AsyncStorage.clear();
+    // AsyncStorage.clear();
+    // socket.on("connect", () =>
+    //   console.log("socket connection", socket.connected)
+    // );
   }, []);
 
   return (

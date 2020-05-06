@@ -1,28 +1,30 @@
 {
   "expo": {
-    "name": "HelloWorld",
-    "slug": "socket-io-react-native",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
+    "name": "Chatter",
+    "slug": "chatter-app-bkb",
+    "platforms": ["ios", "android", "web"],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/chat-icon.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/chat-splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
+      "icon": "./assets/chat-icon-apple.png",
+      "supportsTablet": true,
+      "bundleIdentifier": "chatterappbkb",
+      "buildNumber": "1.0.0"
+    },
+    "android": {
+      "icon": "./assets/chat-icon.png",
+      "package": "com.chatterapp.bkb",
+      "versionCode": 16
     }
   }
 }
